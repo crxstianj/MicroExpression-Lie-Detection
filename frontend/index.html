@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Detector de Mentiras</title>
+</head>
+<body>
+  <h2>Detector de Mentiras</h2>
+
+  <!-- Vista previa de la cámara -->
+  <video id="preview" autoplay muted style="width: 600px; border: 1px solid #ccc;"></video>
+  <br>
+  <button id="startBtn">🎥 Iniciar grabación</button>
+  <button id="stopBtn" disabled>⏹️ Detener y Enviar</button>
+
+  <!-- Mensaje de estado y resultado -->
+  <p id="status"></p>
+  <p id="predictionResult" style="font-weight: bold;"></p>
+
+  <script>
+    const preview = document.getElementById('preview');
+    const status = document.getElementById('status');
+    const result = document.getElementById('predictionResult');
+    const startBtn = document.getElementById('startBtn');
+    const stopBtn = document.getElementById('stopBtn');
+
+    let mediaRecorder;
+    let recordedChunks = [];
+
+    // Acceder a la cámara
+    navigator.mediaDevices.getUserMedia({ video: true, audio: true })
+      .then(stream => {
+        preview.srcObject = stream;
+
+        mediaRecorder = new MediaRecorder(stream);
+
+        mediaRecorder.ondataavailable = function (e) {
+          if (e.data.size > 0) recordedChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = function () {
+          const blob = new Blob(recordedChunks, { type: 'video/mp4' });
+          recordedChunks = [];
+          uploadVideo(blob);
+        };
+
+        startBtn.onclick = () => {
+          mediaRecorder.start();
+          startBtn.disabled = true;
+          stopBtn.disabled = false;
+          status.textContent = "Grabando...";
+          result.textContent = "";
+        };
+
+        stopBtn.onclick = () => {
+          mediaRecorder.stop();
+          startBtn.disabled = false;
+          stopBtn.disabled = true;
+          status.textContent = "Enviando video al servidor...";
+        };
+      })
+      .catch(err => {
+        status.textContent = "Error al acceder a la cámara: " + err;
+      });
+
+    function uploadVideo(blob) {
+      const formData = new FormData();
+      const file = new File([blob], "grabacion.mp4", { type: "video/mp4" });
+      formData.append("file", file);
+
+      fetch("http://localhost:8000/predict_video/", {
+        method: "POST",
+        body: formData
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Error al subir el video");
+          return res.json();
+        })
+        .then(data => {
+          status.textContent = "✅ Video procesado con éxito.";
+          result.innerHTML = `
+            <span><strong>Predicción final:</strong> ${data.FinalPrediction}</span><br>
+            <span>Truth: ${data.Truth}</span><br>
+            <span>Lie: ${data.Lie}</span>
+          `;
+        })
+        .catch(err => {
+          status.textContent = "Error: " + err.message;
+          result.textContent = "";
+        });
+    }
+  </script>
+</body>
+</html>
