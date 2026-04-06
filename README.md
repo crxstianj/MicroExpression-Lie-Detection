@@ -18,6 +18,7 @@ Entrada: imágenes RGB de 224×224. Augmentation con ruido gaussiano durante el 
 ```
 
 ## Estructura del proyecto
+```
 ├── main.py              # Entrenamiento del modelo
 ├── model.py             # Arquitectura LieDetectorCNN
 ├── dataset.py           # Dataset personalizado
@@ -29,8 +30,10 @@ Entrada: imágenes RGB de 224×224. Augmentation con ruido gaussiano durante el 
 ├── frontend/
 │   └── index.html       # Interfaz web para subir videos
 └── docker-compose.yml
+```
 
 ## Estructura esperada del dataset
+```
 data/
 ├── train/train/
 │   ├── truth/<persona>/<pregunta>/.png
@@ -38,6 +41,7 @@ data/
 └── test/test/
 ├── truth/...
 └── lie/...
+```
 
 ## Uso
 
