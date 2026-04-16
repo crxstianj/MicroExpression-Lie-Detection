@@ -36,7 +36,7 @@ Entrada: imágenes RGB de 224×224. Augmentation con ruido gaussiano durante el 
 └── docker-compose.yml
 ```
 
-## Estructura esperada del dataset
+## Estructura del dataset
 ```
 data/
 ├── train/train/
@@ -46,6 +46,7 @@ data/
 ├── truth/...
 └── lie/...
 ```
+> Dataset: https://www.kaggle.com/datasets/devvratmathur/micro-expression-dataset-for-lie-detection
 
 ## Uso
 
