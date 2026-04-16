@@ -7,7 +7,7 @@
 3. La predicción final se determina por **mayoría de votos** entre todos los frames analizados
 
 <p align=center>
-<img width="450" src="https://github.com/user-attachments/assets/7b39347c-943d-46b5-a312-00a01e7845cb" />
+<img width="400" src="https://github.com/user-attachments/assets/7b39347c-943d-46b5-a312-00a01e7845cb" />
 </p>
 
 ## Arquitectura del modelo
